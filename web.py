@@ -52,4 +52,4 @@ def card(seed = None):
 
     return bottle.template("<pre>  {{header}}\n\n{{contents}}</pre><p>{{seed}}</p>", header = header, contents = contents, seed = "0x%016x" % seed)
 
-bottle.run(server='gevent', port=os.environ.get('PORT', 8080))
+bottle.run(server='gevent', host='0.0.0.0', port=os.environ.get('PORT', 8080))
