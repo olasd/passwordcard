@@ -50,6 +50,6 @@ def card(seed = None):
 
     contents = u'\n'.join("%d %s" % (i+1, content) for i, content in enumerate(contents))
 
-    return bottle.template("<pre>  {{header}}\n\n{{contents}}</pre><p>{{seed}}</p>", header = header, contents = contents, seed = "0x%016x" % seed)
+    return bottle.template('''<pre>  {{header}}\n\n{{contents}}</pre><p>0x<a href="/by_seed/{{seed}}">{{seed}}</a></p>''', header = header, contents = contents, seed = "%016x" % seed)
 
 bottle.run(server='gevent', host='0.0.0.0', port=os.environ.get('PORT', 8080))
