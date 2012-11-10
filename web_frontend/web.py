@@ -28,6 +28,9 @@ import gevent.monkey
 gevent.monkey.patch_all()
 import bottle
 
+import magic
+MIME = magic.Magic(mime=True)
+
 import passwordcard
 
 WIDTH = 29
@@ -37,6 +40,8 @@ TOP_CHARSET = passwordcard.CHARSETS['original.alphanumeric']
 BOTTOM_CHARSET = passwordcard.CHARSETS['original.alphanumeric']
 
 HEADER = passwordcard.HEADERS['original']
+
+STATIC_PATH = os.path.join(os.path.dirname(__file__), 'static')
 
 @bottle.route('/')
 @bottle.route('/by_seed/<seed>')
@@ -51,5 +56,11 @@ def card(seed = None):
     contents = u'\n'.join("%d %s" % (i+1, content) for i, content in enumerate(contents))
 
     return bottle.template('''<pre>  {{header}}\n\n{{contents}}</pre><p>0x<a href="/by_seed/{{seed}}">{{seed}}</a></p>''', header = header, contents = contents, seed = "%016x" % seed)
+
+@bottle.route('/static/<filepath:path>')
+def server_static(filepath):
+    mimetype = MIME.from_file(os.path.join(STATIC_PATH, filepath))
+    return bottle.static_file(filepath, root=STATIC_PATH, mimetype=mimetype)
+
 
 bottle.run(server='gevent', host='0.0.0.0', port=os.environ.get('PORT', 8080))
