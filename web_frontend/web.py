@@ -28,9 +28,6 @@ import gevent.monkey
 gevent.monkey.patch_all()
 import bottle
 
-import magic
-MIME = magic.Magic(mime=True)
-
 import passwordcard
 
 WIDTH = 29
@@ -59,8 +56,7 @@ def card(seed = None):
 
 @bottle.route('/static/<filepath:path>')
 def server_static(filepath):
-    mimetype = MIME.from_file(os.path.join(STATIC_PATH, filepath))
-    return bottle.static_file(filepath, root=STATIC_PATH, mimetype=mimetype)
+    return bottle.static_file(filepath, root=STATIC_PATH)
 
 
 bottle.run(server='gevent', host='0.0.0.0', port=os.environ.get('PORT', 8080))
