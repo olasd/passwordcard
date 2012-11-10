@@ -1,1 +1,1 @@
-web: python web.py
+web: ./run_webserver.sh
