@@ -39,9 +39,11 @@ BOTTOM_CHARSET = passwordcard.CHARSETS['original.alphanumeric']
 HEADER = passwordcard.HEADERS['original']
 
 STATIC_PATH = os.path.join(os.path.dirname(__file__), 'static')
+bottle.TEMPLATE_PATH = [os.path.join(os.path.dirname(__file__), 'views')]
 
 @bottle.route('/')
 @bottle.route('/by_seed/<seed>')
+@bottle.view('home')
 def card(seed = None):
     if seed is None:
         seed = random.randrange(1<<64)
@@ -52,7 +54,11 @@ def card(seed = None):
 
     contents = u'\n'.join("%d %s" % (i+1, content) for i, content in enumerate(contents))
 
-    return bottle.template('''<pre>  {{header}}\n\n{{contents}}</pre><p>0x<a href="/by_seed/{{seed}}">{{seed}}</a></p>''', header = header, contents = contents, seed = "%016x" % seed)
+    return {
+        'header': header,
+        'contents': contents,
+        'seed': "%016x" % seed,
+        }
 
 @bottle.route('/static/<filepath:path>')
 def server_static(filepath):
